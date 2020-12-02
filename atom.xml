@@ -3,11 +3,11 @@
   <title>wmg的个人主页</title>
   
   
-  <link href="https://wangmg-ygxdqp.github.io/public/atom.xml" rel="self"/>
+  <link href="https://wangmg-ygxdqp.github.io/atom.xml" rel="self"/>
   
-  <link href="https://wangmg-ygxdqp.github.io/public/"/>
+  <link href="https://wangmg-ygxdqp.github.io/"/>
   <updated>2020-12-02T03:13:17.325Z</updated>
-  <id>https://wangmg-ygxdqp.github.io/public/</id>
+  <id>https://wangmg-ygxdqp.github.io/</id>
   
   <author>
     <name>John Doe</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>elasticsearch 6.8 启用xpack</title>
-    <link href="https://wangmg-ygxdqp.github.io/public/2019/06/25/log-20201127/"/>
-    <id>https://wangmg-ygxdqp.github.io/public/2019/06/25/log-20201127/</id>
+    <link href="https://wangmg-ygxdqp.github.io/2019/06/25/log-20201127/"/>
+    <id>https://wangmg-ygxdqp.github.io/2019/06/25/log-20201127/</id>
     <published>2019-06-25T02:57:40.000Z</published>
     <updated>2020-12-02T03:13:17.325Z</updated>
     
@@ -30,12 +30,12 @@
     
     
     
-    <category term="ELK" scheme="https://wangmg-ygxdqp.github.io/public/categories/ELK/"/>
+    <category term="ELK" scheme="https://wangmg-ygxdqp.github.io/categories/ELK/"/>
     
     
-    <category term="kibana" scheme="https://wangmg-ygxdqp.github.io/public/tags/kibana/"/>
+    <category term="kibana" scheme="https://wangmg-ygxdqp.github.io/tags/kibana/"/>
     
-    <category term="elasticsearch" scheme="https://wangmg-ygxdqp.github.io/public/tags/elasticsearch/"/>
+    <category term="elasticsearch" scheme="https://wangmg-ygxdqp.github.io/tags/elasticsearch/"/>
     
   </entry>
   
