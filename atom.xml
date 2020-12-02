@@ -6,7 +6,7 @@
   <link href="https://wangmg-ygxdqp.github.io/atom.xml" rel="self"/>
   
   <link href="https://wangmg-ygxdqp.github.io/"/>
-  <updated>2020-12-02T08:06:26.040Z</updated>
+  <updated>2020-12-02T09:32:29.356Z</updated>
   <id>https://wangmg-ygxdqp.github.io/</id>
   
   <author>
@@ -15,6 +15,48 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>kafka报错：org.apache.kafka.common.errors.TimeoutException</title>
+    <link href="https://wangmg-ygxdqp.github.io/2019/12/02/kafka-20201202/"/>
+    <id>https://wangmg-ygxdqp.github.io/2019/12/02/kafka-20201202/</id>
+    <published>2019-12-02T09:21:30.000Z</published>
+    <updated>2020-12-02T09:32:29.356Z</updated>
+    
+    <content type="html"><![CDATA[<p>kafka超时这个问题在除去物理网络问题的情况下，最常见的情况是zookeeper.connection.timeout.ms、advertised.host.name 、request.timeout.ms 这三个参数导致的。<a id="more"></a></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">zookeeper.connection.timeout.ms</span><br></pre></td></tr></table></figure><p>连接 zookeeper 的超时时长，如果这个值设置的比较小可能会造成连接超时。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">request.timeout.ms</span><br></pre></td></tr></table></figure><p>这个参数的值必须大于zookeeper.connection.timeout.ms，因为当kafka的leader挂掉，broker在zookeeper.connection.timeout.ms配置的时间内不会rebalance，导致导致producer在30秒后出现超时。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">advertised.host.name</span><br></pre></td></tr></table></figure><p>如果发布到zookeeper的advertised.host.name如果没有设置，会默认取java.net.InetAddress.getCanonicalHostName().值，被用于生产端和消费端。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;kafka超时这个问题在除去物理网络问题的情况下，最常见的情况是zookeeper.connection.timeout.ms、advertised.host.name 、request.timeout.ms 这三个参数导致的。</summary>
+    
+    
+    
+    <category term="ELK" scheme="https://wangmg-ygxdqp.github.io/categories/ELK/"/>
+    
+    
+    <category term="kafka" scheme="https://wangmg-ygxdqp.github.io/tags/kafka/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>docker客户端通过tcp远程连接dockerd</title>
+    <link href="https://wangmg-ygxdqp.github.io/2019/12/02/docker-20201202/"/>
+    <id>https://wangmg-ygxdqp.github.io/2019/12/02/docker-20201202/</id>
+    <published>2019-12-02T08:39:02.000Z</published>
+    <updated>2020-12-02T09:07:01.226Z</updated>
+    
+    <content type="html"><![CDATA[<p>docker客户端一般默认是本地sock连接，如果需要远程连接的话要改成TCP连接。<a id="more"></a></p><h1 id="服务端配置"><a href="#服务端配置" class="headerlink" title="服务端配置"></a>服务端配置</h1><p>修改systemd启动脚本</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim /usr/lib/systemd/system/docker.service</span><br></pre></td></tr></table></figure><p>找到dockerd启动项，找到如下配置。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;bin&#x2F;dockerd --containerd&#x3D;&#x2F;run&#x2F;containerd&#x2F;containerd.sock</span><br></pre></td></tr></table></figure><p>修改docker配置文件，证书申请步骤在下方。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim /etc/docker/daemon.json</span><br></pre></td></tr></table></figure><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;tlsverify&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">&quot;tlscert&quot;</span>: <span class="string">&quot;/etc/docker/server-cert.pem&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;tlskey&quot;</span>: <span class="string">&quot;/etc/docker/server-key.pem&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;tlscacert&quot;</span>: <span class="string">&quot;/etc/docker/ca.pem&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;hosts&quot;</span>:[</span><br><span class="line">    <span class="string">&quot;unix:///var/run/docker.sock&quot;</span>,</span><br><span class="line">    <span class="string">&quot;tcp://0.0.0.0:2376&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h1 id="服务端证书与客户端证书申请"><a href="#服务端证书与客户端证书申请" class="headerlink" title="服务端证书与客户端证书申请"></a>服务端证书与客户端证书申请</h1><p>生成 CA 私钥</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ openssl genrsa -aes256 -out ca-key.pem 4096 </span><br></pre></td></tr></table></figure><p>生成 CA 公钥</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ openssl req -new -x509 -days 365 -key ca-key.pem -sha256 -out ca.pem</span><br></pre></td></tr></table></figure><h2 id="生成服务端证书"><a href="#生成服务端证书" class="headerlink" title="生成服务端证书"></a>生成服务端证书</h2><p>生成服务器私钥</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ openssl genrsa -out server-key.pem 4096</span><br></pre></td></tr></table></figure><p>用私钥生成证书请求文件</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ openssl req -subj <span class="string">&quot;/CN=localhost&quot;</span> -sha256 -new -key server-key.pem -out server.csr</span><br><span class="line">$ <span class="built_in">echo</span> subjectAltName = DNS:localhost,DNS:www.khs1994.com,DNS:tencent,IP:192.168.199.100,IP:192.168.57.110,IP:127.0.0.1 &gt;&gt; extfile.cnf  <span class="comment"># 允许服务端哪些 IP 或 host 能被客户端连接</span></span><br></pre></td></tr></table></figure><p>允许服务端哪些 IP 或 host 能被客户端连接</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">echo</span> extendedKeyUsage = serverAuth &gt;&gt; extfile.cnf</span><br></pre></td></tr></table></figure><p>用 CA 来签署证书</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ openssl x509 -req -days 365 -sha256 -<span class="keyword">in</span> server.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out server-cert.pem -extfile extfile.cnf</span><br></pre></td></tr></table></figure><h2 id="生成客户端证书"><a href="#生成客户端证书" class="headerlink" title="生成客户端证书"></a>生成客户端证书</h2><p>生成客户端私钥</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ openssl genrsa -out key.pem 4096</span><br></pre></td></tr></table></figure><p>用私钥生成证书请求文件 </p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ openssl req -subj <span class="string">&#x27;/CN=client&#x27;</span> -new -key key.pem -out client.csr </span><br><span class="line">$ <span class="built_in">echo</span> extendedKeyUsage = clientAuth &gt;&gt; extfile.cnf</span><br></pre></td></tr></table></figure><p>用 CA 来签署证书</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ openssl x509 -req -days 365 -sha256 -<span class="keyword">in</span> client.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem -extfile extfile.cnf</span><br></pre></td></tr></table></figure><p>删除文件，更改文件权限</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ rm -v client.csr server.csr</span><br><span class="line">$ chmod -v 0400 ca-key.pem key.pem server-key.pem</span><br><span class="line">$ chmod -v 0444 ca.pem server-cert.pem cert.pem</span><br></pre></td></tr></table></figure><h1 id="在客户端测试"><a href="#在客户端测试" class="headerlink" title="在客户端测试"></a>在客户端测试</h1><p>客户端需要ca.pem、cert.pem、key.pem</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker --tlsverify --tlscacert=./ca.pem --tlscert=./cert.pem --tlskey=./key.pem -H=39.106.82.157:2376 info</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;docker客户端一般默认是本地sock连接，如果需要远程连接的话要改成TCP连接。</summary>
+    
+    
+    
+    <category term="docker" scheme="https://wangmg-ygxdqp.github.io/categories/docker/"/>
+    
+    
+    <category term="docker" scheme="https://wangmg-ygxdqp.github.io/tags/docker/"/>
+    
+  </entry>
   
   <entry>
     <title>elasticdump导入导出es索引数据</title>
