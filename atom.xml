@@ -3,11 +3,11 @@
   <title>wmg的个人主页</title>
   
   
-  <link href="https://wangmg-ygxdqp.github.io/atom.xml" rel="self"/>
+  <link href="https://wangmg-ygxdqp.github.io/public/atom.xml" rel="self"/>
   
-  <link href="https://wangmg-ygxdqp.github.io/"/>
-  <updated>2020-12-01T06:16:54.413Z</updated>
-  <id>https://wangmg-ygxdqp.github.io/</id>
+  <link href="https://wangmg-ygxdqp.github.io/public/"/>
+  <updated>2020-12-02T03:13:17.325Z</updated>
+  <id>https://wangmg-ygxdqp.github.io/public/</id>
   
   <author>
     <name>John Doe</name>
@@ -18,28 +18,24 @@
   
   <entry>
     <title>elasticsearch 6.8 启用xpack</title>
-    <link href="https://wangmg-ygxdqp.github.io/2020/11/25/article-name/"/>
-    <id>https://wangmg-ygxdqp.github.io/2020/11/25/article-name/</id>
-    <published>2020-11-25T02:57:40.000Z</published>
-    <updated>2020-12-01T06:16:54.413Z</updated>
+    <link href="https://wangmg-ygxdqp.github.io/public/2019/06/25/log-20201127/"/>
+    <id>https://wangmg-ygxdqp.github.io/public/2019/06/25/log-20201127/</id>
+    <published>2019-06-25T02:57:40.000Z</published>
+    <updated>2020-12-02T03:13:17.325Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="test"><a href="#test" class="headerlink" title="test"></a>test</h2><p>test</p>]]></content>
+    <content type="html"><![CDATA[<p>x-pack是一个Elastic Stack扩展，提供了安全、报警、监控等功能，默认情况下6.3版本以上的es在安装的时候已自动安装x-pack<a id="more"></a></p><p>安装x-pack，到es的安装目录下的bin下运行。</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">elasticsearch-plugin</span> <span class="string">install</span> <span class="string">x-pack</span></span><br></pre></td></tr></table></figure><p>开启x-pack</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">xpack.security.enabled:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure><p>开启x-pack需要开启ssl，否则启动会报错。</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">xpack.security.transport.ssl.enabled:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">xpack.security.transport.ssl.verification_mode:</span> <span class="string">none</span></span><br></pre></td></tr></table></figure><p>配置ssl证书，到es的安装目录下的bin下依次执行。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ elasticsearch-certutil ca</span><br><span class="line">$ elasticsearch-certutil cert --ca elastic-stack-ca.p12</span><br></pre></td></tr></table></figure><p>elasticsearch-certutil ca 会生成elastic-stack-ca.p12 这个文件，elasticsearch-certutil cert –ca elastic-stack-ca.p12 会生成 elastic-certificates.p12 ，elastic-certificates.p12 就是我们需要的证书。</p><p>添加如下配置（根据你自己的环境指定证书路径）</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">xpack.security.transport.ssl.keystore.path:</span> <span class="string">/dir/cert/elastic-certificates.p12</span></span><br><span class="line"><span class="attr">xpack.security.transport.ssl.truststore.path:</span> <span class="string">/dir/cert/elastic-certificates.p12</span></span><br></pre></td></tr></table></figure><p>如果使用head插件，需要添加如下配置。</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">http.cors.enabled:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">http.cors.allow-origin:</span> <span class="string">&quot;*&quot;</span></span><br><span class="line"><span class="attr">http.cors.allow-headers:</span> <span class="string">Authorization,X-Requested-With,Content-Length,Content-Type</span></span><br></pre></td></tr></table></figure><p>由于开后x-pack后需要认证，所以head的访问格式也有变化。</p><pre><code>http://head.host:9100/?auth_user=user&amp;auth_password=passwd</code></pre><p>auth_user=用户名，auth_password=密码。</p><p>开启x-pack后es的内置用户会存储在.security索引中，我们需要生成这个索引;到es的安装目录下的bin下运行。（如果误删了.security索引，需要停止es服务安照如下步骤操作）</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ elasticsearch-keystore create</span><br><span class="line">$ elasticsearch-setup-passwords interactive</span><br></pre></td></tr></table></figure><p>elastic用户拥有最高权限，可以使用这个用户在kibana上创建用户。</p><p>es开启x-pack后kibana需要认证，在kibana.yaml中添加如下配置。</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">elasticsearch.username:</span> <span class="string">&quot;kibana&quot;</span></span><br><span class="line"><span class="attr">elasticsearch.password:</span> <span class="string">&quot;your_password&quot;</span></span><br></pre></td></tr></table></figure><p>logstash 同样需要认证，以下为output中的配置。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">elasticsearch &#123;</span><br><span class="line">      hosts &#x3D;&gt; [&quot;host1:9200&quot;]</span><br><span class="line">      index &#x3D;&gt; [&quot;name-%&#123;+YYYY.MM.dd&#125;&quot;]</span><br><span class="line">      user &#x3D;&gt; &quot;logstash&quot;</span><br><span class="line">      password &#x3D;&gt; &quot;your_password&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>es完整的配置如下</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">cluster.name:</span> <span class="string">ELK</span></span><br><span class="line"><span class="attr">node.name:</span> <span class="string">elk-1</span></span><br><span class="line"><span class="attr">path.data:</span> <span class="string">/dir/elasticsearch</span></span><br><span class="line"><span class="attr">path.logs:</span> <span class="string">/dir/log/elasticsearch</span></span><br><span class="line"><span class="attr">bootstrap.memory_lock:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">network.host:</span> <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span></span><br><span class="line"><span class="attr">http.port:</span> <span class="number">9200</span></span><br><span class="line"><span class="attr">discovery.zen.ping.unicast.hosts:</span> [<span class="string">&quot;host1&quot;</span>, <span class="string">&quot;host2&quot;</span>]</span><br><span class="line"><span class="attr">discovery.zen.minimum_master_nodes:</span> <span class="number">1</span></span><br><span class="line"><span class="attr">xpack.security.enabled:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">xpack.security.transport.ssl.enabled:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">xpack.security.transport.ssl.verification_mode:</span> <span class="string">none</span></span><br><span class="line"><span class="attr">xpack.security.transport.ssl.keystore.path:</span> <span class="string">/dir/cert/elastic-certificates.p12</span></span><br><span class="line"><span class="attr">xpack.security.transport.ssl.truststore.path:</span> <span class="string">/dir/cert/elastic-certificates.p12</span></span><br><span class="line"><span class="attr">http.cors.enabled:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">http.cors.allow-origin:</span> <span class="string">&quot;*&quot;</span></span><br><span class="line"><span class="attr">http.cors.allow-headers:</span> <span class="string">Authorization,X-Requested-With,Content-Length,Content-Type</span></span><br></pre></td></tr></table></figure><p>参考文档：<a href="https://tianmingxing.com/2019/06/20/%E5%9C%A8ElasticSearch6.8%E5%8F%8A%E4%BB%A5%E4%B8%8A%E7%89%88%E6%9C%AC%E5%BC%80%E5%90%AF%E5%AE%89%E5%85%A8%E8%AE%A4%E8%AF%81%E5%8A%9F%E8%83%BD">es集群加密认证</a></p>]]></content>
     
     
-      
-      
-    <summary type="html">&lt;h2 id=&quot;test&quot;&gt;&lt;a href=&quot;#test&quot; class=&quot;headerlink&quot; title=&quot;test&quot;&gt;&lt;/a&gt;test&lt;/h2&gt;&lt;p&gt;test&lt;/p&gt;
-</summary>
-      
+    <summary type="html">&lt;p&gt;x-pack是一个Elastic Stack扩展，提供了安全、报警、监控等功能，默认情况下6.3版本以上的es在安装的时候已自动安装x-pack</summary>
     
     
     
-    <category term="ELK" scheme="https://wangmg-ygxdqp.github.io/categories/ELK/"/>
+    <category term="ELK" scheme="https://wangmg-ygxdqp.github.io/public/categories/ELK/"/>
     
     
-    <category term="kibana" scheme="https://wangmg-ygxdqp.github.io/tags/kibana/"/>
+    <category term="kibana" scheme="https://wangmg-ygxdqp.github.io/public/tags/kibana/"/>
     
-    <category term="elasticsearch" scheme="https://wangmg-ygxdqp.github.io/tags/elasticsearch/"/>
+    <category term="elasticsearch" scheme="https://wangmg-ygxdqp.github.io/public/tags/elasticsearch/"/>
     
   </entry>
   
