@@ -6,7 +6,7 @@
   <link href="https://wangmg-ygxdqp.github.io/atom.xml" rel="self"/>
   
   <link href="https://wangmg-ygxdqp.github.io/"/>
-  <updated>2020-12-03T01:32:51.639Z</updated>
+  <updated>2020-12-03T02:56:55.230Z</updated>
   <id>https://wangmg-ygxdqp.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>mysql 安装审计插件</title>
+    <link href="https://wangmg-ygxdqp.github.io/2020/12/03/mysql-20201203/"/>
+    <id>https://wangmg-ygxdqp.github.io/2020/12/03/mysql-20201203/</id>
+    <published>2020-12-03T02:40:42.000Z</published>
+    <updated>2020-12-03T02:56:55.230Z</updated>
+    
+    <content type="html"><![CDATA[<p>我这里选择安装的审计插件是 libaudit_plugin.so <a id="more"></a></p><p>插件下载地址：<a href="https://bintray.com/mcafee/mysql-audit-plugin/release#files">libaudit_plugin.so</a></p><p>查看mysql插件目录</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show variables like &#39;plugin_dir&#39;;</span><br></pre></td></tr></table></figure><p>将 libaudit_plugin.so 拷贝到插件目录</p><p>安装插件</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">install plugin audit soname &#39;libaudit_plugin.so&#39;;</span><br></pre></td></tr></table></figure><p>我这里出现了报错</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1123 (HY000): Can’t initialize function ‘audit’; Plugin initialization function failed.</span><br></pre></td></tr></table></figure><p>从报错很明显是因为加载时初始化出现了问题，可能是数据不一致导致的。</p><p>下载 <a href="https://raw.github.com/mcafee/mysql-audit/master/offset-extract/offset-extract.sh">offset-extract.sh</a> 需要翻墙</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./offset-extract.sh /usr/sbin/mysqld</span><br><span class="line">&#123;<span class="string">&quot;5.7.19&quot;</span>,<span class="string">&quot;b4633eb887552a3bbb5db3a1eea76e48&quot;</span>, 7800, 7848, 3624, 4776, 456, 360, 0, 32, 64, 160, 536, 7964, 4352, 3648, 3656, 3660, 6048, 2072, 8, 7032, 7072, 7056&#125;</span><br></pre></td></tr></table></figure><p>根据脚本的执行结果修改my.cnf文件，修改好后重启mysql安装插件。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">audit_offsets&#x3D;7800, 7848, 3624, 4776, 456, 360, 0, 32, 64, 160, 536, 7964, 4352, 3648, 3656, 3660, 6048, 2072, 8, 7032, 7072, 7056</span><br></pre></td></tr></table></figure><p>检查插件是否已经安装成功</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW GLOBAL VARIABLES LIKE &#39;%audi%&#39;;</span><br></pre></td></tr></table></figure><p>audit_json_file 这个值的参数为ON表示开启审计功能，audit_json_log_file 就是审计日志所在路径。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;我这里选择安装的审计插件是 libaudit_plugin.so</summary>
+    
+    
+    
+    <category term="mysql" scheme="https://wangmg-ygxdqp.github.io/categories/mysql/"/>
+    
+    
+    <category term="mysql" scheme="https://wangmg-ygxdqp.github.io/tags/mysql/"/>
+    
+  </entry>
   
   <entry>
     <title>kafka报错：org.apache.kafka.common.errors.TimeoutException</title>
