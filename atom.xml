@@ -6,7 +6,7 @@
   <link href="https://wangmg-ygxdqp.github.io/atom.xml" rel="self"/>
   
   <link href="https://wangmg-ygxdqp.github.io/"/>
-  <updated>2020-12-03T02:56:55.230Z</updated>
+  <updated>2020-12-04T05:45:09.306Z</updated>
   <id>https://wangmg-ygxdqp.github.io/</id>
   
   <author>
@@ -18,10 +18,10 @@
   
   <entry>
     <title>mysql 安装审计插件</title>
-    <link href="https://wangmg-ygxdqp.github.io/2020/12/03/mysql-20201203/"/>
-    <id>https://wangmg-ygxdqp.github.io/2020/12/03/mysql-20201203/</id>
-    <published>2020-12-03T02:40:42.000Z</published>
-    <updated>2020-12-03T02:56:55.230Z</updated>
+    <link href="https://wangmg-ygxdqp.github.io/2020/06/03/mysql-20201203/"/>
+    <id>https://wangmg-ygxdqp.github.io/2020/06/03/mysql-20201203/</id>
+    <published>2020-06-03T02:40:42.000Z</published>
+    <updated>2020-12-04T05:45:09.306Z</updated>
     
     <content type="html"><![CDATA[<p>我这里选择安装的审计插件是 libaudit_plugin.so <a id="more"></a></p><p>插件下载地址：<a href="https://bintray.com/mcafee/mysql-audit-plugin/release#files">libaudit_plugin.so</a></p><p>查看mysql插件目录</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show variables like &#39;plugin_dir&#39;;</span><br></pre></td></tr></table></figure><p>将 libaudit_plugin.so 拷贝到插件目录</p><p>安装插件</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">install plugin audit soname &#39;libaudit_plugin.so&#39;;</span><br></pre></td></tr></table></figure><p>我这里出现了报错</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1123 (HY000): Can’t initialize function ‘audit’; Plugin initialization function failed.</span><br></pre></td></tr></table></figure><p>从报错很明显是因为加载时初始化出现了问题，可能是数据不一致导致的。</p><p>下载 <a href="https://raw.github.com/mcafee/mysql-audit/master/offset-extract/offset-extract.sh">offset-extract.sh</a> 需要翻墙</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./offset-extract.sh /usr/sbin/mysqld</span><br><span class="line">&#123;<span class="string">&quot;5.7.19&quot;</span>,<span class="string">&quot;b4633eb887552a3bbb5db3a1eea76e48&quot;</span>, 7800, 7848, 3624, 4776, 456, 360, 0, 32, 64, 160, 536, 7964, 4352, 3648, 3656, 3660, 6048, 2072, 8, 7032, 7072, 7056&#125;</span><br></pre></td></tr></table></figure><p>根据脚本的执行结果修改my.cnf文件，修改好后重启mysql安装插件。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">audit_offsets&#x3D;7800, 7848, 3624, 4776, 456, 360, 0, 32, 64, 160, 536, 7964, 4352, 3648, 3656, 3660, 6048, 2072, 8, 7032, 7072, 7056</span><br></pre></td></tr></table></figure><p>检查插件是否已经安装成功</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SHOW GLOBAL VARIABLES LIKE &#39;%audi%&#39;;</span><br></pre></td></tr></table></figure><p>audit_json_file 这个值的参数为ON表示开启审计功能，audit_json_log_file 就是审计日志所在路径。</p>]]></content>
     
@@ -162,6 +162,27 @@
     <category term="kibana" scheme="https://wangmg-ygxdqp.github.io/tags/kibana/"/>
     
     <category term="elasticsearch" scheme="https://wangmg-ygxdqp.github.io/tags/elasticsearch/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ingress</title>
+    <link href="https://wangmg-ygxdqp.github.io/2019/04/03/ingress/"/>
+    <id>https://wangmg-ygxdqp.github.io/2019/04/03/ingress/</id>
+    <published>2019-04-03T07:50:48.000Z</published>
+    <updated>2020-12-08T09:06:17.675Z</updated>
+    
+    <content type="html"><![CDATA[<p>Ingress 相当于负载均衡器的路由配置信息；Ingress controller 可以理解为一个监听器，实时的感知后端 service、pod 的变化，当得到这些变化信息后，Ingress controller 再结合 Ingress 的配置，更新反向代理负载均衡器，达到服务发现的作用。<a id="more"></a></p><p>可用选择的ingress controller 又很多，比如 <a href="https://traefik.io/">traefik</a>、<a href="https://kubernetes.github.io/ingress-nginx">nginx-controller</a>、<a href="https://konghq.com/blog/kubernetes-ingress-controller-for-kong">Kubernetes Ingress Controller for Kong</a>、<a href="https://github.com/jcmoraisjr/haproxy-ingress">HAProxy Ingress controller</a></p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Ingress 相当于负载均衡器的路由配置信息；Ingress controller 可以理解为一个监听器，实时的感知后端 service、pod 的变化，当得到这些变化信息后，Ingress controller 再结合 Ingress 的配置，更新反向代理负载均衡器，达到服务发现的作用。</summary>
+    
+    
+    
+    <category term="kubernetes" scheme="https://wangmg-ygxdqp.github.io/categories/kubernetes/"/>
+    
+    
+    <category term="kubernetes.ingress" scheme="https://wangmg-ygxdqp.github.io/tags/kubernetes-ingress/"/>
     
   </entry>
   
