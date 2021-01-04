@@ -1,0 +1,269 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="pragma" content="no-cache">
+  <meta http-equiv="cache-control" content="no-cache">
+  <meta http-equiv="expires" content="0">
+  
+  <title>ruby正则表达式 | wmg的个人主页</title>
+  <meta name="author" content="John Doe">
+  
+  <meta name="description" content="ruby正则表达式汇总。logstash的grok插件使用的是ruby的正则，可以根据本文对照。">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="ruby正则表达式"/>
+  <meta property="og:site_name" content="wmg的个人主页"/>
+
+  
+    <meta property="og:image" content=""/>
+  
+
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-70812759-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?cb5448498d7169c668b07c2b255d62c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/atom.xml" title="wmg的个人主页" type="application/atom+xml">
+</head>
+
+ <body>  
+  <nav id="main-nav" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+      <button type="button" class="navbar-header navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+	  <a class="navbar-brand" href="/">wmg的个人主页</a>
+      <div class="collapse navbar-collapse nav-menu">
+		<ul class="nav navbar-nav">
+		  
+		  <li>
+			<a href="/archives" title="All the articles.">
+			  <i class=""></i>文章归档
+			</a>
+		  </li>
+		  
+		  <li>
+			<a href="/atom.xml" title="Subscribe me.">
+			  <i class=""></i>RSS
+			</a>
+		  </li>
+		  
+		</ul>
+      </div>
+    </div> <!-- container -->
+</nav>
+<div class="clearfix"></div>
+
+  <div class="container">
+  	<div class="content">
+    	 
+
+
+	
+		<div class="page-header">
+			<h1> ruby正则表达式</h1>
+		</div>
+	
+
+
+
+<div class="row post">
+	<!-- cols -->
+	
+	<div id="top_meta"></div>
+	<div class="col-md-9">
+	
+
+	<!-- content -->
+	<div class="mypage">		
+	  		
+
+	  <p>ruby正则表达式汇总。logstash的grok插件使用的是ruby的正则，可以根据本文对照。<a id="more"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">^	            匹配行的开头。</span><br><span class="line">$	            匹配行的结尾。</span><br><span class="line">.	            匹配除了换行符以外的任意单字符。使用 m 选项时，它也可以匹配换行符。</span><br><span class="line">[...]	            匹配在方括号中的任意单字符。</span><br><span class="line">[^...]	            匹配不在方括号中的任意单字符。</span><br><span class="line">re*	            匹配前面的子表达式零次或多次。</span><br><span class="line">re+	            匹配前面的子表达式一次或多次。</span><br><span class="line">re?	            匹配前面的子表达式零次或一次。</span><br><span class="line">re&#123; n&#125;	            匹配前面的子表达式 n 次。</span><br><span class="line">re&#123; n,&#125;	            匹配前面的子表达式 n 次或 n 次以上。</span><br><span class="line">re&#123; n, m&#125;	    匹配前面的子表达式至少 n 次至多 m 次。</span><br><span class="line">a| b	            匹配 a 或 b。</span><br><span class="line">(re)	            对正则表达式进行分组，并记住匹配文本。</span><br><span class="line">(?imx)	            暂时打开正则表达式内的 i、 m 或 x 选项。如果在圆括号中，则只影响圆括号内的部分。</span><br><span class="line">(?-imx)	            暂时关闭正则表达式内的 i、 m 或 x 选项。如果在圆括号中，则只影响圆括号内的部分。</span><br><span class="line">(?: re)	            对正则表达式进行分组，但不记住匹配文本。</span><br><span class="line">(?imx: re)	    暂时打开圆括号内的 i、 m 或 x 选项。</span><br><span class="line">(?-imx: re)	    暂时关闭圆括号内的 i、 m 或 x 选项。</span><br><span class="line">(?#...)	            注释。</span><br><span class="line">(?&#x3D; re)	            使用模式指定位置。没有范围。</span><br><span class="line">(?! re)	            使用模式的否定指定位置。没有范围。</span><br><span class="line">(?&gt; re)	            匹配无回溯的独立模式。</span><br><span class="line">\w	            匹配单词字符。</span><br><span class="line">\W	            匹配非单词字符。</span><br><span class="line">\s	            匹配空白字符。等价于 [\t\n\r\f]。</span><br><span class="line">\S	            匹配非空白字符。</span><br><span class="line">\d	            匹配数字。等价于 [0-9]。</span><br><span class="line">\D	            匹配非数字。</span><br><span class="line">\A	            匹配字符串的开头。</span><br><span class="line">\Z	            匹配字符串的结尾。如果存在换行符，则只匹配到换行符之前。</span><br><span class="line">\z	            匹配字符串的结尾。</span><br><span class="line">\G	            匹配最后一个匹配完成的点。</span><br><span class="line">\b	            当在括号外时匹配单词边界，当在括号内时匹配退格键（0x08）。</span><br><span class="line">\B	            匹配非单词边界。</span><br><span class="line">\n, \t, etc.	    匹配换行符、回车符、制表符，等等。</span><br><span class="line">\1...\9	            匹配第 n 个分组子表达式。</span><br><span class="line">\10	            如果已匹配过，则匹配第 n 个分组子表达式。否则指向字符编码的八进制表示。</span><br><span class="line">&#x2F;ruby&#x2F;	            匹配 &quot;ruby&quot;</span><br></pre></td></tr></table></figure>
+
+<p>匹配特殊字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;.&#x2F;	    匹配除了换行符以外的其他任意字符</span><br><span class="line">&#x2F;.&#x2F;m	    在多行模式下，也能匹配换行符</span><br><span class="line">&#x2F;\d&#x2F;	    匹配一个数字，等同于 &#x2F;[0-9]&#x2F;</span><br><span class="line">&#x2F;\D&#x2F;	    匹配一个非数字，等同于 &#x2F;[^0-9]&#x2F;</span><br><span class="line">&#x2F;\s&#x2F;	    匹配一个空白字符，等同于 &#x2F;[ \t\r\n\f]&#x2F;</span><br><span class="line">&#x2F;\S&#x2F;	    匹配一个非空白字符，等同于 &#x2F;[^ \t\r\n\f]&#x2F;</span><br><span class="line">&#x2F;\w&#x2F;	    匹配一个单词字符，等同于 &#x2F;[A-Za-z0-9_]&#x2F;</span><br><span class="line">&#x2F;\W&#x2F;	    匹配一个非单词字符，等同于 &#x2F;[^A-Za-z0-9_]&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>重复匹配</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;ruby?&#x2F;	        匹配 &quot;rub&quot; 或 &quot;ruby&quot;。其中，y 是可有可无的。</span><br><span class="line">&#x2F;ruby*&#x2F;	        匹配 &quot;rub&quot; 加上 0 个或多个的 y。</span><br><span class="line">&#x2F;ruby+&#x2F;	        匹配 &quot;rub&quot; 加上 1 个或多个的 y。</span><br><span class="line">&#x2F;\d&#123;3&#125;&#x2F;	        刚好匹配 3 个数字。</span><br><span class="line">&#x2F;\d&#123;3,&#125;&#x2F;	匹配 3 个或多个数字。</span><br><span class="line">&#x2F;\d&#123;3,5&#125;&#x2F;	匹配 3 个、4 个或 5 个数字。</span><br></pre></td></tr></table></figure>
+
+<p>分组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;\D\d+&#x2F;	                    无分组： + 重复 \d</span><br><span class="line">&#x2F;(\D\d)+&#x2F;	            分组： + 重复 \D\d 对</span><br><span class="line">&#x2F;([Rr]uby(, )?)+&#x2F;	    匹配 &quot;Ruby&quot;、&quot;Ruby, ruby, ruby&quot;，等等</span><br><span class="line">&#x2F;([Rr])uby&amp;\1ails&#x2F;	    匹配 ruby&amp;rails 或 Ruby&amp;Rails</span><br><span class="line">&#x2F;([&#39;&quot;])(?:(?!\1).)*\1&#x2F;	    单引号或双引号字符串。\1 匹配第一个分组所匹配的字符，\2 匹配第二个分组所匹配的字符，依此类推。</span><br></pre></td></tr></table></figure>
+
+<p>替换</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;ruby|rube&#x2F;	    匹配 &quot;ruby&quot; 或 &quot;rube&quot;</span><br><span class="line">&#x2F;rub(y|le)&#x2F;	    匹配 &quot;ruby&quot; 或 &quot;ruble&quot;</span><br><span class="line">&#x2F;ruby(!+|\?)&#x2F;	    &quot;ruby&quot; 后跟一个或多个 ! 或者跟一个 ?</span><br></pre></td></tr></table></figure>
+
+<p>位置锚定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;^Ruby&#x2F;	          匹配以 &quot;Ruby&quot; 开头的字符串或行</span><br><span class="line">&#x2F;Ruby$&#x2F;	          匹配以 &quot;Ruby&quot; 结尾的字符串或行</span><br><span class="line">&#x2F;\ARuby&#x2F;	  匹配以 &quot;Ruby&quot; 开头的字符串</span><br><span class="line">&#x2F;Ruby\Z&#x2F;	  匹配以 &quot;Ruby&quot; 结尾的字符串</span><br><span class="line">&#x2F;\bRuby\b&#x2F;	  匹配单词边界的 &quot;Ruby&quot;</span><br><span class="line">&#x2F;\brub\B&#x2F;	  \B 是非单词边界：匹配 &quot;rube&quot; 和 &quot;ruby&quot; 中的 &quot;rub&quot;，但不匹配单独的 &quot;rub&quot;</span><br><span class="line">&#x2F;Ruby(?&#x3D;!)&#x2F;	  如果 &quot;Ruby&quot; 后跟着一个感叹号，则匹配 &quot;Ruby&quot;</span><br><span class="line">&#x2F;Ruby(?!!)&#x2F;	  如果 &quot;Ruby&quot; 后没有跟着一个感叹号，则匹配 &quot;Ruby&quot;</span><br></pre></td></tr></table></figure>
+
+<p>特殊语法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;R(?#comment)&#x2F;	     匹配 &quot;R&quot;。所有剩余的字符都是注释。</span><br><span class="line">&#x2F;R(?i)uby&#x2F;	     当匹配 &quot;uby&quot; 时不区分大小写。</span><br><span class="line">&#x2F;R(?i:uby)&#x2F;	     与上面相同。</span><br><span class="line">&#x2F;rub(?:y|le))&#x2F;	     只分组，不进行 \1 反向引用</span><br></pre></td></tr></table></figure>
+
+<p>参考文档：<a target="_blank" rel="noopener" href="https://www.runoob.com/ruby/ruby-regular-expressions.html">ruby正则表达式</a></p>
+	  
+	</div>
+
+	<div>
+  	<center>
+	<div class="pagination">
+
+    
+    
+    <a href="/2020/04/03/StorageClass/" type="button" class="btn btn-default"><i
+                class="fa fa-arrow-circle-o-left"></i> Prev</a>
+    
+
+    <a href="/" type="button" class="btn btn-default"><i class="fa fa-home"></i>Home</a>
+    
+    <a href="/2019/12/29/centos7/" type="button" class="btn btn-default ">Next<i
+                class="fa fa-arrow-circle-o-right"></i></a>
+    
+
+    
+</div>
+
+    </center>
+	</div>
+	
+	<!-- comment -->
+	
+<section id="comment">
+    <h2 class="title">Comments</h2>
+
+    
+</section>
+
+
+	</div> <!-- col-md-9/col-md-12 -->
+		
+	
+	<div id="side_meta">
+		<div class="col-md-3" id="post_meta"> 
+
+	<!-- date -->
+	
+	<div class="meta-widget">
+	<i class="fa fa-clock-o"></i>
+	2020-01-04 
+	</div>
+	
+
+	<!-- categories -->
+    
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#categorys"><i class="fa fa-folder"></i></a>	
+    <ul id="categorys" class="tag_box list-unstyled collapse in">
+          
+  <li>
+    <li><a href="/categories/ELK/">ELK<span>4</span></a></li>
+  </li>
+
+    </ul>
+	</div>
+	
+
+	<!-- tags -->
+	
+	<div class="meta-widget">
+	<a data-toggle="collapse" data-target="#tags"><i class="fa fa-tags"></i></a>		  
+    <ul id="tags" class="tag_box list-unstyled collapse in">	  
+	    
+  <li><a href="/tags/ruby/">ruby<span>1</span></a></li>
+    </ul>
+	</div>
+		
+
+	<!-- toc -->
+	<div class="meta-widget">
+	
+	</div>
+	
+    <hr>
+	
+</div><!-- col-md-3 -->
+
+	</div>
+		
+
+</div><!-- row -->
+
+
+
+	</div>
+  </div>
+  <div class="container-narrow">
+  <footer> <p>
+  <!-- &copy; 2021 John Doe
+  
+      with help from <a href="http://hexo.io/" target="_blank">Hexo</a>,<a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind</a>,<a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a> and <a href="http://getbootstrap.com/" target="_blank">BOOTSTRA.386</a>. 
+     <br> Theme by <a target="_blank" rel="noopener" href="http://github.com/wzpan/hexo-theme-freemind/">Freemind.386</a>.     -->
+</p>
+ </footer>
+</div> <!-- container-narrow -->
+  
+
+
+  
+<a id="gotop" href="#">   
+  <span>⬆︎TOP</span>
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/search.js"></script> 
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+
+</body>
+   </html>
